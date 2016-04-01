@@ -6,11 +6,24 @@
 ########                  01/04/2016                   ########
 ###############################################################
 from __future__ import division
+from PIL import Image
 import os
 import sys
 import logging
-from PIL import Image
+import fnmatch
 
+
+
+
+def findRecursively(path, suffix):
+    patten = "*." + suffix
+    matches = []
+    for root, dirnames, filenames in os.walk('path'):
+        for filename in fnmatch.filter(filenames, patten):
+            matches.append(os.path.join(root, filename))
+            
+    print matches
+    return matches
 
 # Optimise jpeg function
 # Input :- Source DIR
@@ -20,10 +33,11 @@ from PIL import Image
 def pngOpt(source, destination):
     # Return Value initialisations
     returnValue = True
-    
+    pngs = []
     logging.info("Scanning %s for pngs", source)
     # Scan the sour DIR to find all png's init
-    pngs = [f for f in os.listdir(source) if f.endswith('png')]
+    #pngs = [f for f in os.listdir(source) if f.endswith('png')]
+    pngs = findRecursively(source, "png")
     
     if (len(pngs) > 0):
         logging.info("Found %d pngs to optimise", len(pngs))
@@ -31,14 +45,15 @@ def pngOpt(source, destination):
             # Start optimising jepg's
             src = os.path.abspath(source + "/" + pngs[i])
             dest =  os.path.abspath(destination + "/" + pngs[i])
-            if not os.path.isdir(destination):
-                os.mkdir(destination)
+            pngDest = os.path.dirname(os.path.abspath(dest))
+            if not os.path.isdir(pngDest):
+                os.makedirs(pngDest)
+            srcSize = os.path.getsize(src)
             image = Image.open(src)
             image.save(dest,optimize=True)
-            srcSize = os.path.getsize(src)
             destSize = os.path.getsize(dest)
             percentDiff = ((srcSize - destSize) / srcSize) * 100
-            logging.info("Reduced image %d by %.2f %%", i + 1 , percentDiff)
+            logging.info("Reduced image %s by %.2f %%", src, percentDiff)
     else:
         # We didn't find any png's
         logging.error("Found no png's in %s", source)
