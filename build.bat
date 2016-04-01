@@ -1,0 +1,1 @@
+pyinstaller.exe --onefile --version-file=version.txt pngOpt.py
