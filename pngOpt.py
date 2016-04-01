@@ -14,18 +14,20 @@ import fnmatch
 
 
 
-
+# Search DIR for all files with a predfined suffix
+# Input :- Path to the DIR
+# Input :- The suffix
+# Output :- All files in the path DIR with that suffix
 def findRecursively(path, suffix):
     patten = "*." + suffix
     matches = []
-    for root, dirnames, filenames in os.walk('path'):
+    for root, dirnames, filenames in os.walk(path):
         for filename in fnmatch.filter(filenames, patten):
-            matches.append(os.path.join(root, filename))
-            
-    print matches
+            matches.append(os.path.join(root, filename))          
+
     return matches
 
-# Optimise jpeg function
+# Optimise png function
 # Input :- Source DIR
 # Input :- Destination DIR
 # Output :- Boolean
@@ -43,8 +45,8 @@ def pngOpt(source, destination):
         logging.info("Found %d pngs to optimise", len(pngs))
         for i in range(len(pngs)):
             # Start optimising jepg's
-            src = os.path.abspath(source + "/" + pngs[i])
-            dest =  os.path.abspath(destination + "/" + pngs[i])
+            src = os.path.abspath(pngs[i])
+            dest =  os.path.abspath(pngs[i].replace(source, destination))
             pngDest = os.path.dirname(os.path.abspath(dest))
             if not os.path.isdir(pngDest):
                 os.makedirs(pngDest)
