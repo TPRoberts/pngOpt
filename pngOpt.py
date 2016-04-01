@@ -118,7 +118,7 @@ if __name__ == "__main__":
 
     # Check arguments
     if len(sys.argv) > 1:
-        if len(sys.argv) < 3 or len(sys.argv) > 4:
+        if len(sys.argv) < 3 or len(sys.argv) > 3:
             logging.error("*** usage: %s <source directory> <destination directory>\n",sys.argv[0])
         else:
             if (checkArgs(sys.argv[1], sys.argv[2])):
